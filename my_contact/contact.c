@@ -2,6 +2,29 @@
 #pragma warning(disable:6031)
 #include"contact.h"
 
+void loadContact(contact* con)
+{
+
+	FILE* pfread = fopen("contact.txt", "rb");
+	if (pfread == NULL)
+	{
+		perror("loadContact");
+		return;
+	}
+
+	peopleInfo tmp = { 0 };
+	while (fread(&tmp, sizeof(peopleInfo), 1, pfread))
+	{
+		checkCapacity(con);
+
+		con->data[con->count] = tmp;
+		con->count++;
+	}
+
+	fclose(pfread);
+	pfread == NULL;
+}
+
 //静态版本
 //void initContact(contact* con)
 //{
@@ -24,6 +47,10 @@ int initContact(contact* con)
 		return 1;
 	}
 	con->capacity = 3;
+
+	//加载文件信息
+	loadContact(con);
+
 	return 0;
 }
 
@@ -64,7 +91,7 @@ int checkCapacity(contact* con)
 		}
 		con->data = ptr;
 		con->capacity += 2;
-		printf("扩容成功！\n");
+		//printf("扩容成功！\n");
 	}
 	
 	return 0;
@@ -90,6 +117,8 @@ void addContact(contact* con)
 
 	con->count++;
 	printf("添加成功！\n");
+
+
 	system("pause");
 	system("cls");
 }
@@ -285,4 +314,31 @@ void sortContact(contact* con)
 	system("pause");
 	system("cls");
 
+}
+
+void saveContact(const contact* con)
+{
+	assert(con);
+	if (0 == con->count)
+	{
+		//printf("通讯录为空\n");
+
+		/*system("pause");
+		system("cls");*/
+		return;
+	}
+	FILE* pfwrite = fopen("contact.txt", "wb+");
+	if (pfwrite == NULL)
+	{
+		perror("saveContact");
+		return;
+	}
+
+	for (int i = 0; i < con->count; i++)
+	{
+		fwrite(con->data+i, sizeof(peopleInfo), 1,pfwrite);
+	}
+
+	fclose(pfwrite);
+	pfwrite = NULL;
 }

@@ -48,3 +48,7 @@ void delContact(contact* con);
 void modifyContact(contact* con);
 
 void sortContact(contact* con);
+
+void saveContact(const contact* con);
+
+void loadContact(contact* con);
